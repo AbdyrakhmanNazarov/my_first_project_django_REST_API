@@ -1,7 +1,8 @@
 from django.urls import path
-from .api import apartments_list, apartments_create
+from .api import apartments_list, apartments_create, apartments_detail
 
 urlpatterns = [
     path('apartments-list/', apartments_list, name='apartments-list'),
     path('apartments-create', apartments_create, name='apartments-create'),
+    path('apartments-detail', apartments_detail, name='apartments-detail'),
 ]
