@@ -16,9 +16,15 @@ class Object(models.Model):
 
 
 class Block(models.Model):
+    BLOCK_TYPES = (
+        ('elit', 'Элитный'),
+        ('simple', 'Простой')
+    )
     name = models.CharField(max_length=100, verbose_name="Название блока")
     object = models.ForeignKey(Object, on_delete=models.CASCADE, related_name='blocks', verbose_name='Объект')
     floor_count = models.IntegerField(verbose_name='Количество этажей в блоке')
+    type = models.CharField(max_length=20, choices=BLOCK_TYPES, default='simple', verbose_name='Типы блока')
+    
     
     def __str__(self):
         return f"Block {self.name} of {self.object.name}"
