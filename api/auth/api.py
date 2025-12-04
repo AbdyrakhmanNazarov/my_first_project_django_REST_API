@@ -1,18 +1,28 @@
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import LoginSerializer, RegisterSerializer, ProfileSerializer, ChangePasswordSerializer
+from .serializers import (
+    LoginSerializer,
+    RegisterSerializer,
+    ProfileSerializer,
+    ChangePasswordSerializer,
+    DeactivateSerializer,
+    ActivateSerializer,
+)
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
+from accounts.models import User
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def custom_login(request):
     serializer = LoginSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)  
-    return Response(serializer.validated_data) 
+    serializer.is_valid(raise_exception=True)
+    return Response(serializer.validated_data)
 
-@api_view(['POST']) 
+
+@api_view(["POST"])
 @permission_classes([AllowAny])
 def custom_register(request):
     serializer = RegisterSerializer(data=request.data)
@@ -20,7 +30,8 @@ def custom_register(request):
     serializer.save()
     return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-@api_view(['POST'])
+
+@api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def custom_logout(request):
     Token.objects.filter(user=request.user).delete()
@@ -35,17 +46,56 @@ def profile(request):
     if request.method == "GET":
         serializer = ProfileSerializer(user)
         return Response(serializer.data)
-    
+
     if request.method in ["PUT", "PATCH"]:
         serializer = ProfileSerializer(user, request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=200)
 
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def change_password(request):
-    serializer = ChangePasswordSerializer(data=request.data, context={"request":request})
+    serializer = ChangePasswordSerializer(
+        data=request.data, context={"request": request}
+    )
     serializer.is_valid(raise_exception=True)
     serializer.save()
-    return Response({"detail":"Пароль успешно изменен"})
+    return Response({"detail": "Пароль успешно изменен"})
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def deactivate(request):
+    serializer = DeactivateSerializer(data=request.data, context={"request": request})
+    serializer.is_valid(raise_exception=True)
+
+    if not serializer.validated_data["confirm"]:
+        return Response(
+            {"confirm": "Подтвердите деактивацию"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer.save()
+
+    return Response(
+        {"message": "Аккаунт успешно деактивирован"}, status=status.HTTP_200_OK
+    )
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def activate(request):
+    serializer = ActivateSerializer(data=request.data, context={"request": request})
+    serializer.is_valid(raise_exception=True)
+
+    if not serializer.validated_data["confirm"]:
+        return Response(
+            {"confirm": "Подтвердите активацию"}, status=status.HTTP_400_BAD_REQUEST
+        )
+
+    serializer.save()
+
+    return Response(
+        {"message": "Аккаунт успешно активирован"}, status=status.HTTP_200_OK
+    )

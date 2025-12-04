@@ -64,4 +64,23 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = self.context["request"].user
         user.set_password(self.validated_data["new_password"])
         user.save()
-        return user       
+        return user    
+
+
+class DeactivateSerializer(serializers.Serializer):
+    confirm = serializers.BooleanField(required=True)
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        user.is_active = False
+        user.save()
+        return user
+    
+
+class ActivateSerializer(serializers.Serializer):
+    confirm = serializers.BooleanField(required=True)
+    
+    def save(self, **kwargs):
+        user = self.context["request"].user
+        user.is_active = True
+        user.save()
+        return user
