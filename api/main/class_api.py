@@ -5,7 +5,9 @@ from .serializers import (
     ApartmentListSerializer,
     ApartmentDetailSerializer,
     ApartmentCreateUpdateSerializer,
-    BlockSerializer,
+    #=========================
+    BlockModelSerializer,
+    #=========================
     ObjectModelSerializer,
 )
 class ApartmentViewSet(ModelViewSet):
@@ -25,10 +27,38 @@ class ApartmentViewSet(ModelViewSet):
             return [IsAdminUser()]
         return super().get_permissions()
 
-class BlockViewSet(ReadOnlyModelViewSet):
+# =======================================
+class BlockViewSet(ModelViewSet):
     queryset=Block.objects.all()
-    serializer_class=BlockSerializer
+    serializer_class=BlockModelSerializer
+    permission_classes = (AllowAny,)
 
-class ObjectViewSet(ReadOnlyModelViewSet):
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return BlockModelSerializer
+        elif self.action in ["create", "update", "partial_update"]:
+            return BlockModelSerializer
+        return super().get_serializer_class()
+    
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "delete"]:
+            return [IsAdminUser()]
+        return super().get_permissions()
+
+# =======================================
+class ObjectViewSet(ModelViewSet):
     queryset=Object.objects.all()
     serializer_class=ObjectModelSerializer
+    permission_classes = (AllowAny,)
+
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return ObjectModelSerializer
+        elif self.action in ["create", "update", "partial_update"]:
+            return ObjectModelSerializer
+        return super().get_serializer_class()
+    
+    def get_permissions(self):
+        if self.action in ["create", "update", "partial_update", "delete"]:
+            return [IsAdminUser()]
+        return super().get_permissions()

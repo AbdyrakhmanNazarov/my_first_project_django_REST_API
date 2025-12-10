@@ -1,10 +1,10 @@
 from rest_framework import serializers
 from main.models import Apartment, Block, Object
 
-class BlockSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Block
-        fields = "__all__"
+# class BlockSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = Block
+#         fields = "__all__"
 
     # name = serializers.CharField()
     # floor_count = serializers.IntegerField()
@@ -22,7 +22,7 @@ class BlockSerializer(serializers.ModelSerializer):
     #     instance.save()
     #     return instance
 
-class BlockListSerializer(serializers.ModelSerializer):
+class BlockModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Block
         fields = "__all__"
@@ -33,7 +33,7 @@ class ObjectModelSerializer(serializers.ModelSerializer):
         fields = '__all__'
 
 class ApartmentListSerializer(serializers.ModelSerializer):
-    block = BlockSerializer(many=False)
+    block = BlockModelSerializer(many=False)
     class Meta:
         model = Apartment
         # fields = '__all__'
