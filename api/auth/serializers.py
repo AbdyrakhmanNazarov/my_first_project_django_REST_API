@@ -50,7 +50,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         read_only_fields = ("email",)
 
 
-class ChangePasswordSerializer(serializers.Serializer):
+class FunctionChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only = True)
     new_password = serializers.CharField(write_only = True, validators = [validate_password])
 
@@ -66,21 +66,19 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.save()
         return user    
 
+class GenericChangePasswordSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only = True)
+    new_password = serializers.CharField(write_only = True, validators = [validate_password])
+
+    def validate(self, attrs):
+        user = self.context["request"].user 
+        if not user.check_password(attrs.get("old_password")):
+            raise serializers.ValidationError("Старый пароль неверен")
+        return attrs
+    
 
 class DeactivateSerializer(serializers.Serializer):
     confirm = serializers.BooleanField(required=True)
-    def save(self, **kwargs):
-        user = self.context["request"].user
-        user.is_active = False
-        user.save()
-        return user
-    
 
 class ActivateSerializer(serializers.Serializer):
     confirm = serializers.BooleanField(required=True)
-    
-    def save(self, **kwargs):
-        user = self.context["request"].user
-        user.is_active = True
-        user.save()
-        return user

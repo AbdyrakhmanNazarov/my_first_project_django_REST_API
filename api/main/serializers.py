@@ -6,7 +6,6 @@ class BlockSerializer(serializers.ModelSerializer):
         model = Block
         fields = "__all__"
 
-
     # name = serializers.CharField()
     # floor_count = serializers.IntegerField()
     # object = serializers.PrimaryKeyRelatedField(queryset=Object.objects.all())
@@ -22,22 +21,26 @@ class BlockSerializer(serializers.ModelSerializer):
     #     instance.type = validated_data.get('type', instance.type)  
     #     instance.save()
     #     return instance
-    
+
+class BlockListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Block
+        fields = "__all__"
 
 class ObjectModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Object
         fields = '__all__'
 
-# class ApartmentModelSerializer(serializers.ModelSerializer):
-#     block = BlockSerializer(many=False)
-#     class Meta:
-#         model = Apartment
-#         # fields = '__all__'
-#         # fields = ('id', 'number', 'floor', 'area', 'image', 'rooms_count')
-#         fields = ('id', 'number', 'floor', 'area', 'image', 'rooms_count', 'block')
+class ApartmentListSerializer(serializers.ModelSerializer):
+    block = BlockSerializer(many=False)
+    class Meta:
+        model = Apartment
+        # fields = '__all__'
+        # fields = ('id', 'number', 'floor', 'area', 'image', 'rooms_count')
+        fields = ('id', 'number', 'floor', 'area', 'image', 'rooms_count', 'block')
 
-class ApartmentSerializer(serializers.ModelSerializer): 
+class ApartmentDetailSerializer(serializers.ModelSerializer): 
     block_name = serializers.CharField(source='block.name', read_only=True)
     block_id = serializers.IntegerField(source='block.id', read_only=True)
     object_name = serializers.CharField(source= 'block.object.name', read_only=True)
@@ -45,9 +48,13 @@ class ApartmentSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Apartment
-        exclude = ('block',)
+        fields = '__all__'
+        # exclude = ('block',)
 
-    
+class ApartmentCreateUpdateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Apartment
+        fields = '__all__'
     
     
 
