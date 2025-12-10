@@ -1,5 +1,8 @@
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.pagination import PageNumberPagination
+from django_filters.rest_framework import DjangoFilterBackend
+from .paginations import StandartResultsSetPagination
 from main.models import Apartment, Object, Block
 from .serializers import (
     ApartmentListSerializer,
@@ -10,10 +13,17 @@ from .serializers import (
     #=========================
     ObjectModelSerializer,
 )
+
+# ======================================================
+# Apartment
+# ======================================================
 class ApartmentViewSet(ModelViewSet):
     queryset=Apartment.objects.all()
     serializer_class = ApartmentListSerializer
     permission_classes = (AllowAny,)
+    pagination_class = StandartResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("floor", "area", "rooms_count", "type", "block__name", "block__object__name")
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -27,11 +37,17 @@ class ApartmentViewSet(ModelViewSet):
             return [IsAdminUser()]
         return super().get_permissions()
 
-# =======================================
+# ======================================================
+# Block
+# ======================================================
 class BlockViewSet(ModelViewSet):
     queryset=Block.objects.all()
     serializer_class=BlockModelSerializer
     permission_classes = (AllowAny,)
+    pagination_class = StandartResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("name", "object__name", "type", )
+
 
     def get_serializer_class(self):
         if self.action == "retrieve":
@@ -45,11 +61,16 @@ class BlockViewSet(ModelViewSet):
             return [IsAdminUser()]
         return super().get_permissions()
 
-# =======================================
+# ======================================================
+# Object
+# ======================================================
 class ObjectViewSet(ModelViewSet):
     queryset=Object.objects.all()
     serializer_class=ObjectModelSerializer
     permission_classes = (AllowAny,)
+    pagination_class = StandartResultsSetPagination
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ("name",)
 
     def get_serializer_class(self):
         if self.action == "retrieve":

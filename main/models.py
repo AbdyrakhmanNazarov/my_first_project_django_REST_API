@@ -1,6 +1,10 @@
 from django.db import models
 from django_resized import ResizedImageField
 
+# ======================================================
+# Object
+# ======================================================
+
 class Object(models.Model):
     name = models.CharField(max_length=100, verbose_name='Название объекта')
     address = models.CharField(max_length=255, verbose_name='Адрес объекта')
@@ -14,7 +18,21 @@ class Object(models.Model):
         verbose_name = 'Объект'
         verbose_name_plural = 'Объекты'
 
+class ObjectImage(models.Model):
+    object = models.ForeignKey(Object, on_delete=models.CASCADE, related_name="images")
+    image = ResizedImageField(size=[800, 600], upload_to='objects_photo/', verbose_name="Изображения обьекта", 
+                              blank=True, null=True, quality=90, crop=['middle', 'center'])
+    
+    class Meta:
+        verbose_name="Изображения обьекта"
+        verbose_name_plural="Изображения обьектов"
 
+    def __str__(self):
+        return f"Изобрадения для {self.object.name}"
+    
+# ======================================================
+# Block
+# ======================================================
 class Block(models.Model):
     BLOCK_TYPES = (
         ('elit', 'Элитный'),
@@ -33,6 +51,22 @@ class Block(models.Model):
         verbose_name = 'Блок'
         verbose_name_plural = 'Блоки'
 
+
+class BlockImage(models.Model):
+    object = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="images")
+    image = ResizedImageField(size=[800, 600], upload_to='blocks_photo/', verbose_name="Изображения блока", 
+                              blank=True, null=True, quality=90, crop=['middle', 'center'])
+    
+    class Meta:
+        verbose_name="Изображения блока"
+        verbose_name_plural="Изображения блоков"
+
+    def __str__(self):
+        return f"Изображения для {self.object.name}"
+
+# ======================================================
+# Apartment
+# ======================================================
 
 class Apartment(models.Model):
     APARTMENT_TYPES = (
@@ -58,3 +92,16 @@ class Apartment(models.Model):
         verbose_name_plural = "Квартиры"
         unique_together = ['number', 'block']
         ordering = ['block', 'floor', 'number']
+
+
+class ApartmnentImage(models.Model):
+    object = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="images")
+    image = ResizedImageField(size=[800, 600], upload_to='apartments_photo/', verbose_name="Изображения квартиры", 
+                              blank=True, null=True, quality=90, crop=['middle', 'center'])
+    
+    class Meta:
+        verbose_name="Изображения квартиры"
+        verbose_name_plural="Изображения квартир"
+
+    def __str__(self):
+        return f"Изображения для {self.object.name}"
