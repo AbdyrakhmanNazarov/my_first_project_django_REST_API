@@ -5,7 +5,7 @@ from .models import User
 
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ('id', 'email', 'first_name')
+    list_display = ('id', 'email', 'first_name','role')
     list_display_links = ('id', 'email',)
     search_fields = ('first_name', 'email',)
     filter_horizontal = ('groups', 'user_permissions')

@@ -53,7 +53,7 @@ class Block(models.Model):
 
 
 class BlockImage(models.Model):
-    object = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="images")
+    block = models.ForeignKey(Block, on_delete=models.CASCADE, related_name="images")
     image = ResizedImageField(size=[800, 600], upload_to='blocks_photo/', verbose_name="Изображения блока", 
                               blank=True, null=True, quality=90, crop=['middle', 'center'])
     
@@ -95,7 +95,7 @@ class Apartment(models.Model):
 
 
 class ApartmnentImage(models.Model):
-    object = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="images")
+    apartment = models.ForeignKey(Apartment, on_delete=models.CASCADE, related_name="images")
     image = ResizedImageField(size=[800, 600], upload_to='apartments_photo/', verbose_name="Изображения квартиры", 
                               blank=True, null=True, quality=90, crop=['middle', 'center'])
     

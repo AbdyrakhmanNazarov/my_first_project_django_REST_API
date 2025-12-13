@@ -1,3 +1,22 @@
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .class_api import ApartmentViewSet, ObjectViewSet, BlockViewSet
+
+router=DefaultRouter()
+router.register('apartments', ApartmentViewSet, basename='apartments')
+router.register('objects', ObjectViewSet, basename='objects')
+router.register('blocks', BlockViewSet, basename='blocks')
+
+urlpatterns = [
+    path('', include(router.urls))
+]
+
+
+
+
+
+
+
 # from django.urls import path
 # # from .api import (
 # #     apartments_list,
@@ -69,15 +88,3 @@
 
 
 
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .class_api import ApartmentViewSet, ObjectViewSet, BlockViewSet
-
-router=DefaultRouter()
-router.register('apartments', ApartmentViewSet, basename='apartments')
-router.register('objects', ObjectViewSet, basename='objects')
-router.register('blocks', BlockViewSet, basename='blocks')
-
-urlpatterns = [
-    path('', include(router.urls))
-]

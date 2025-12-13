@@ -17,7 +17,8 @@ from .serializers import (
     LoginSerializer,
     ActivateSerializer,
     DeactivateSerializer,
-    GenericChangePasswordSerializer
+    GenericChangePasswordSerializer,
+    LogoutSerializer
 )
 
 class RegisterView(CreateAPIView):
@@ -55,7 +56,6 @@ class ChangePasswordView(GenericAPIView):
         )
         serializer.is_valid(raise_exception=True)
         
-        # Проверка старого пароля
         user = request.user
         old_password = serializer.validated_data.get('old_password')
         new_password = serializer.validated_data.get('new_password')
@@ -66,22 +66,21 @@ class ChangePasswordView(GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST
             )
         
-        # Установка нового пароля
         user.set_password(new_password)
         user.save()
         
-        # Удаление токена для безопасности
         Token.objects.filter(user=user).delete()
         
         return Response({"message": "Пароль успешно изменен"})
     
     
 class LogoutView(GenericAPIView):
+    serializer_class = LogoutSerializer
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
         Token.objects.filter(user=request.user).delete()
-        return Response({"message":"Вы вышли из системы"})    
+        return Response({"message": "Вы вышли из системы"})  
     
 class DeactivateAccountView(GenericAPIView):
     serializer_class = DeactivateSerializer

@@ -1,12 +1,31 @@
 # # ==========================================================
 # # Комбинированный
-
+# # ==========================================================
 # from rest_framework.generics import GenericAPIView
 
-# # from rest_framework.generics import (
-# #     ListCreateAPIView,      # GET список + POST создать
-# #     RetrieveUpdateDestroyAPIView,  # GET один + PUT/PATCH + DELETE
-# # )
+# from rest_framework.generics import (
+#     ListCreateAPIView,      # GET список + POST создать
+#     RetrieveUpdateDestroyAPIView,  # GET один + PUT/PATCH + DELETE
+# )
+
+# # GET список + POST создать
+# class ApartmentListCreate(ListCreateAPIView):
+#     queryset = Apartment.objects.all()
+#     serializer_class = ApartmentSerializer
+
+# # GET один + PUT/PATCH + DELETE
+# class ApartmentRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
+#     queryset = Apartment.objects.all()
+#     serializer_class = ApartmentSerializer
+#     lookup_field = 'pk'
+# # ==========================================================
+
+
+
+
+
+# # ==========================================================
+# # Простой
 # # ==========================================================
 
 # from rest_framework.generics import (
@@ -51,21 +70,6 @@
 #     serializer_class = ApartmentSerializer
 #     lookup_field = "pk"
 
-
-# # ==========================================================
-# # Комбинированный
-# # ==========================================================
-
-# # # GET список + POST создать
-# # class ApartmentListCreate(ListCreateAPIView):
-# #     queryset = Apartment.objects.all()
-# #     serializer_class = ApartmentSerializer
-
-# # # GET один + PUT/PATCH + DELETE
-# # class ApartmentRetrieveUpdateDestroy(RetrieveUpdateDestroyAPIView):
-# #     queryset = Apartment.objects.all()
-# #     serializer_class = ApartmentSerializer
-# #     lookup_field = 'pk'
 
 # # ==========================================================
 # # block

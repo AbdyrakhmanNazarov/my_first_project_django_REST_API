@@ -20,7 +20,8 @@ class LoginSerializer(serializers.Serializer):
         token, _= Token.objects.get_or_create(user=user)
         return {"token" : token.key, "email" : user.email}
         
-    
+class LogoutSerializer(serializers.Serializer):
+    pass
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
@@ -79,6 +80,13 @@ class GenericChangePasswordSerializer(serializers.Serializer):
 
 class DeactivateSerializer(serializers.Serializer):
     confirm = serializers.BooleanField(required=True)
+    
+    def validate_confirm(self, value):
+        if not value:
+            raise serializers.ValidationError(
+                "Необходимо подтвердить деактивацию"
+            )
+        return value
 
 class ActivateSerializer(serializers.Serializer):
-    confirm = serializers.BooleanField(required=True)
+    pass
