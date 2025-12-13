@@ -31,10 +31,8 @@ class ObjectFilter(FilterSet):
 
 
 class BlockFilter(FilterSet):
-    # Фильтр по названию блока
     name = CharFilter(field_name='name', lookup_expr='icontains')
 
-    # Минимальное и максимальное количество этажей
     floor_count_min = NumberFilter(field_name='floor_count', lookup_expr='gte')
     floor_count_max = NumberFilter(field_name='floor_count', lookup_expr='lte')
 
