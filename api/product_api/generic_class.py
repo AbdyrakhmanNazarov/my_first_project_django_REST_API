@@ -3,6 +3,7 @@ from product.models import Post
 from .serializers import PostSerializer
 from .permissions import PostPermission
 
+
 class PostListCreateAPIView(ListCreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
@@ -16,5 +17,3 @@ class PostDetailAPIView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [PostPermission]
-
-

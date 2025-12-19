@@ -5,13 +5,23 @@ from .serializers import (
     LoginSerializer,
     RegisterSerializer,
     ProfileSerializer,
-    ChangePasswordSerializer,
+    # ChangePasswordSerializer,
     DeactivateSerializer,
     ActivateSerializer,
+    SendMailSerializer
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from accounts.models import User
+
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def test_email_send(request):
+    serializer = SendMailSerializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response("Email sent successfuly.")
 
 
 @api_view(["POST"])

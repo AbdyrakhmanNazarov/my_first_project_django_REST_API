@@ -1,4 +1,4 @@
-#!/Users/aijamal/Backend_Abu/practicts_projects/rest_api/nurzaman/venv/bin/python3
+#!/Users/aijamal/Backend_Abu/practicts_projects/rest_api/nurzaman/venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys

@@ -1,12 +1,13 @@
-# from .api import (
-#     custom_login,
-#     custom_register,
-#     custom_logout,
-#     profile,
-#     change_password,
-#     activate,
-#     deactivate,
-# )
+from .api import (
+    custom_login,
+    custom_register,
+    custom_logout,
+    profile,
+    change_password,
+    activate,
+    deactivate,
+    test_email_send,
+)
 
 # urlpatterns = [
 #     # path("login/", custom_login, name="login"),
@@ -35,6 +36,7 @@ urlpatterns = [
     path("register/", RegisterView.as_view(), name="register"),
     path("profile/", ProfileView.as_view(), name="profile"),
     path("deactivate/", DeactivateAccountView.as_view(), name="deactivate"),
-    path("change_password/", ChangePasswordView.as_view(), name="change_password")
+    path("change_password/", ChangePasswordView.as_view(), name="change_password"),
     # path("activate/", ActivateView.as_view(), name="activate"),
+    path("send-test-email/", test_email_send, name="send-test-email")
 ]
