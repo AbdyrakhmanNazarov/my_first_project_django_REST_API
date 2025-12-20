@@ -1,13 +1,12 @@
-from .api import (
-    custom_login,
-    custom_register,
-    custom_logout,
-    profile,
-    change_password,
-    activate,
-    deactivate,
-    test_email_send,
-)
+# from .api import (
+#     custom_login,
+#     custom_register,
+#     custom_logout,
+#     profile,
+#     change_password,
+#     activate,
+#     deactivate,
+# )
 
 # urlpatterns = [
 #     # path("login/", custom_login, name="login"),
@@ -19,6 +18,11 @@ from .api import (
 #     # path("deactivate/", deactivate, name="deactivate"),
 # ]
 
+from .api import (
+    test_email_send,
+    send_reset_code, 
+    reset_password,
+    ) 
 from django.urls import path
 from .generic_accounts_api import (
     LoginView,
@@ -38,5 +42,7 @@ urlpatterns = [
     path("deactivate/", DeactivateAccountView.as_view(), name="deactivate"),
     path("change_password/", ChangePasswordView.as_view(), name="change_password"),
     # path("activate/", ActivateView.as_view(), name="activate"),
-    path("send-test-email/", test_email_send, name="send-test-email")
+    path("send-test-email/", test_email_send, name="send-test-email"),
+    path("send-reset-code/", send_reset_code, name="send-reset-code"),
+    path("reset-password/", reset_password, name="reset-password"),
 ]

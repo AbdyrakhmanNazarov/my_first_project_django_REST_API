@@ -157,17 +157,41 @@ MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smpt.EmailBackend'
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
-EMAIL_PORT = 587
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_USE_TLS = True
+# EMAIL_PORT = 587
 
-# EMAIL_HOST = 'smtp.yandex.com'
-# EMAIL_USE_SSL = True
-# EMAIL_PORT = 465
+# # EMAIL_HOST = 'smtp.yandex.com'
+# # EMAIL_USE_SSL = True
+# # EMAIL_PORT = 465
 
-EMAIL_HOST_USER = 'emailforbackandskils@gmail.com'
-EMAIL_HOST_PASWWORD = 'lybdjpfvungctdxy'
+# EMAIL_HOST_USER = 'user@gmail.com'
+# EMAIL_HOST_PASSWORD = 'КОД ИЗ google my account create app password'
 
-DEFAULT_FROM_EMAIL = 'emailforbackandskils@gmail.com'
+# DEFAULT_FROM_EMAIL = 'user@gmail.com'
+
+
+import environ
+import os
+
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+
+# читаем .env файл
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# Основные секреты
+DEBUG = env.bool("DEBUG")
+SECRET_KEY = env("SECRET_KEY")
+
+# Настройки email
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')

@@ -2,8 +2,14 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.authtoken.models import Token
-from accounts.models import User
+from accounts.models import User, PasswordResetCode
 from django.conf import settings
+import random
+from datetime import timedelta
+from django.core.mail import send_mail
+from django.utils import timezone
+from django.contrib.auth import get_user_model
+
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
@@ -108,3 +114,66 @@ class SendMailSerializer(serializers.Serializer):
             fail_silently=False
         )
         return validated_data
+    
+
+User = get_user_model()
+
+class SendResetCodeSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+
+    def create(self, validated_data):
+        email = validated_data["email"]
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            raise serializers.ValidationError("Пользователь не найден")
+
+        code = str(random.randint(1000, 9999))
+
+        PasswordResetCode.objects.create(
+            user=user,
+            code=code
+        )
+
+        send_mail(
+            subject="Сброс пароля",
+            message=f"Ваш код для сброса пароля: {code}",
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=[email],
+            fail_silently=False
+        )
+
+        return {"email": email}
+
+
+class ResetPasswordSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    code = serializers.CharField(max_length=4)
+    new_password = serializers.CharField(min_length=8)
+
+    def create(self, validated_data):
+        email = validated_data["email"]
+        code = validated_data["code"]
+        new_password = validated_data["new_password"]
+
+        user = User.objects.filter(email=email).first()
+        if not user:
+            raise serializers.ValidationError("Пользователь не найден")
+
+        reset_code = PasswordResetCode.objects.filter(
+            user=user,
+            code=code
+        ).order_by("-created_at").first()
+
+        if not reset_code:
+            raise serializers.ValidationError("Неверный код")
+
+        if reset_code.created_at < timezone.now() - timedelta(minutes=10):
+            raise serializers.ValidationError("Код истёк")
+
+        user.set_password(new_password)
+        user.save()
+
+        PasswordResetCode.objects.filter(user=user).delete()
+
+        return {"detail": "Пароль успешно изменён"}

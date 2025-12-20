@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.managers import UserManager
-
+from django.contrib.auth import get_user_model
 
 
 class User(AbstractUser, PermissionsMixin):
@@ -36,3 +36,14 @@ class User(AbstractUser, PermissionsMixin):
 
     def __str__(self):
         return f'{str(self.email) or self.first_name}'
+    
+
+User = get_user_model()
+
+class PasswordResetCode(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    code = models.CharField(max_length=4)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.email} - {self.code}"
