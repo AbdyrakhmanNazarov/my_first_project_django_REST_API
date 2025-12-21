@@ -20,8 +20,10 @@
 
 from .api import (
     test_email_send,
-    send_reset_code, 
-    reset_password,
+    # ================================================================ 
+    # send_reset_code, 
+    # reset_password,
+    # ================================================================ 
     ) 
 from django.urls import path
 from .generic_accounts_api import (
@@ -31,7 +33,12 @@ from .generic_accounts_api import (
     ProfileView,
     DeactivateAccountView,
     ChangePasswordView,
+    # ================================================================ 
     # ActivateAccountView,
+    # ================================================================ 
+    RequestPasswordResetView,
+    VerifyPasswordResetOTPView,
+    ResetPasswordView,
 )
 
 urlpatterns = [
@@ -41,8 +48,15 @@ urlpatterns = [
     path("profile/", ProfileView.as_view(), name="profile"),
     path("deactivate/", DeactivateAccountView.as_view(), name="deactivate"),
     path("change_password/", ChangePasswordView.as_view(), name="change_password"),
+    # ================================================================ 
     # path("activate/", ActivateView.as_view(), name="activate"),
+    # ================================================================ 
     path("send-test-email/", test_email_send, name="send-test-email"),
-    path("send-reset-code/", send_reset_code, name="send-reset-code"),
-    path("reset-password/", reset_password, name="reset-password"),
+    # ================================================================ 
+    # path("send-reset-code/", send_reset_code, name="send-reset-code"),
+    # path("reset-password/", reset_password, name="reset-password"),
+    # ================================================================ 
+    path('password-reset/request/', RequestPasswordResetView.as_view(), name='request-password-reset'),
+    path('password-reset/verify/', VerifyPasswordResetOTPView.as_view(), name='verify-password-reset'),
+    path('password-reset/complete/', ResetPasswordView.as_view(), name='complete-password-reset'),
 ]

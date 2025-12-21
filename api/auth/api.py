@@ -5,35 +5,37 @@ from .serializers import (
     LoginSerializer,
     RegisterSerializer,
     ProfileSerializer,
-    # ChangePasswordSerializer,
+    GenericChangePasswordSerializer,
     DeactivateSerializer,
     ActivateSerializer,
     SendMailSerializer,
-    SendResetCodeSerializer,
-    ResetPasswordSerializer,
+    # ================================================================ 
+    # SendResetCodeSerializer,
+    # ResetPasswordSerializer,
+    # ================================================================ 
 )
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.authtoken.models import Token
 from accounts.models import User
 
+# ================================================================ 
+# @api_view(["POST"])
+# @permission_classes([AllowAny])
+# def send_reset_code(request):
+#     serializer = SendResetCodeSerializer(data=request.data)
+#     serializer.is_valid(raise_exception=True)
+#     serializer.save()
+#     return Response({"detail": "Код отправлен на email"})
 
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def send_reset_code(request):
-    serializer = SendResetCodeSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({"detail": "Код отправлен на email"})
 
-
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def reset_password(request):
-    serializer = ResetPasswordSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-    serializer.save()
-    return Response({"detail": "Пароль обновлён"})
-
+# @api_view(["POST"])
+# @permission_classes([AllowAny])
+# def reset_password(request):
+#     serializer = ResetPasswordSerializer(data=request.data)
+#     serializer.is_valid(raise_exception=True)
+#     serializer.save()
+#     return Response({"detail": "Пароль обновлён"})
+# ================================================================ 
 
 @api_view(["POST"])
 @permission_classes([AllowAny])
@@ -87,7 +89,7 @@ def profile(request):
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def change_password(request):
-    serializer = ChangePasswordSerializer(
+    serializer = GenericChangePasswordSerializer(
         data=request.data, context={"request": request}
     )
     serializer.is_valid(raise_exception=True)

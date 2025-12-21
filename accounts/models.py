@@ -2,8 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser, PermissionsMixin
 from phonenumber_field.modelfields import PhoneNumberField
 from accounts.managers import UserManager
-from django.contrib.auth import get_user_model
-
+from django.utils.timezone import now
 
 class User(AbstractUser, PermissionsMixin):
     class Meta:
@@ -37,13 +36,24 @@ class User(AbstractUser, PermissionsMixin):
     def __str__(self):
         return f'{str(self.email) or self.first_name}'
     
-
-User = get_user_model()
-
-class PasswordResetCode(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class OTPVerification(models.Model):
+    email = models.EmailField(verbose_name="Электронная почта", blank=True, null=True)
     code = models.CharField(max_length=4)
-    created_at = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    def is_expired(self):
+        return (now() - self.created_at).seconds > 300
+    
     def __str__(self):
-        return f"{self.user.email} - {self.code}"
+        return f"{self.email} - {self.code}"
+    
+
+# ================================================================    
+# class PasswordResetCode(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     code = models.CharField(max_length=4)
+#     created_at = models.DateTimeField(auto_now_add=True)
+
+#     def __str__(self):
+#         return f"{self.user.email} - {self.code}"
+# ================================================================ 

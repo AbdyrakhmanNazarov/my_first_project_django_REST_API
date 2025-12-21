@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.utils.translation import gettext_lazy as _
-from .models import User
+from .models import User, OTPVerification
 
 
 @admin.register(User)
@@ -57,3 +57,8 @@ class UserAdmin(admin.ModelAdmin):
     # form = UserChangeForm
     # add_form = AdminUserCreationForm
     # change_password_form = AdminPasswordChangeForm
+
+@admin.register(OTPVerification)
+class OTPVerificationAdmin(admin.ModelAdmin):
+    list_display = ('email', 'created_at')
+    search_fields = ('email', 'created_at')
