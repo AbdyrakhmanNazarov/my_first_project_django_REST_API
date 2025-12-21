@@ -35,7 +35,10 @@ class User(AbstractUser, PermissionsMixin):
 
     def __str__(self):
         return f'{str(self.email) or self.first_name}'
+
+
     
+      
 class OTPVerification(models.Model):
     email = models.EmailField(verbose_name="Электронная почта", blank=True, null=True)
     code = models.CharField(max_length=4)

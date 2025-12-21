@@ -2,7 +2,7 @@ from rest_framework import serializers
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework.authtoken.models import Token
-from accounts.models import User, PasswordResetCode
+from accounts.models import User, OTPVerification
 from django.conf import settings
 import random
 from datetime import timedelta
