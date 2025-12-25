@@ -11,25 +11,55 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 
 from pathlib import Path
+import environ
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# ========================
+# 1. Подключаем .env
+# ========================
+env = environ.Env(
+    DEBUG=(bool, False)
+)
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-yl11o8b7wlp=(=-*m66i6q4-uz9pv#+-5)puyc@iei+qw^3q56'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
+# ========================
+# 2. Основные секреты
+# ========================
+SECRET_KEY = env('SECRET_KEY')
+DEBUG = env.bool("DEBUG")
 ALLOWED_HOSTS = ["*"]
+
+# ========================
+# 3. Email
+# ========================
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+
+# ========================
+# 4. Database
+# ========================
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env.int('DB_PORT'),
+    }
+}
+
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -82,12 +112,27 @@ WSGI_APPLICATION = 'core.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+
+# ============ Database SQLITE3 ============
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+
+# ============ Database POSTGRESQL ===========
+# DATABASES =  {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME' : 'postgres',
+#         'USER' : 'postgres',
+#         'PASSWORD' :'jazz3383',
+#         'HOST' : 'localhost',
+#         'PORT' : '5432'
+#     }
+# }
 
 
 # Password validation
@@ -171,27 +216,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL_HOST_PASSWORD = 'КОД ИЗ google my account create app password'
 
 # DEFAULT_FROM_EMAIL = 'user@gmail.com'
-
-
-import environ
-import os
-
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-
-# читаем .env файл
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
-
-# Основные секреты
-DEBUG = env.bool("DEBUG")
-SECRET_KEY = env("SECRET_KEY")
-
-# Настройки email
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
-EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
