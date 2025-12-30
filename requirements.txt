@@ -16,6 +16,7 @@ phonenumbers==9.0.19
 pillow==11.0.0
 psycopg2-binary==2.9.11
 PyJWT==2.10.1
+python-decouple==3.8
 pytz==2025.2
 PyYAML==6.0.3
 six==1.15.0
