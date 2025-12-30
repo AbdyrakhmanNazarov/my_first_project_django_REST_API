@@ -13,49 +13,80 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import environ
 import os
+from decouple import config
 
-# Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# ========================
-# 1. Подключаем .env
-# ========================
-env = environ.Env(
-    DEBUG=(bool, False)
-)
-environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+SECRET_KEY = config('SECRET_KEY')
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# ========================
-# 2. Основные секреты
-# ========================
-SECRET_KEY = env('SECRET_KEY')
-DEBUG = env.bool("DEBUG")
 ALLOWED_HOSTS = ["*"]
 
-# ========================
-# 3. Email
-# ========================
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
-EMAIL_PORT = env.int('EMAIL_PORT')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+USE_POSTGRES = config('USE_POSTGRES', default=False, cast=bool)
+DB_NAME = config('DB_NAME', default='db.sqlite3')
+DB_USER = config('DB_USER', default='')
+DB_PASSWORD = config('DB_PASSWORD', default='')
+DB_HOST = config('DB_HOST', default='localhost')
+DB_PORT = config('DB_PORT', default='5432')
 
-# ========================
-# 4. Database
-# ========================
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USER'),
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': env('DB_HOST'),
-        'PORT': env.int('DB_PORT'),
+if USE_POSTGRES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': DB_NAME,
+            'USER': DB_USER,
+            'PASSWORD': DB_PASSWORD,
+            'HOST': DB_HOST,
+            'PORT': DB_PORT,
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / DB_NAME,
+        }
+    }
+
+# # ========================
+# # 1. Подключаем .env
+# # ========================
+# env = environ.Env(
+#     DEBUG=(bool, False)
+# )
+# environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
+
+# # ========================
+# # 2. Основные секреты
+# # ========================
+# SECRET_KEY = env('SECRET_KEY')
+# DEBUG = env.bool("DEBUG")
+# ALLOWED_HOSTS = ["*"]
+
+# # ========================
+# # 3. Email
+# # ========================
+# EMAIL_BACKEND = env('EMAIL_BACKEND')
+# EMAIL_HOST = env('EMAIL_HOST')
+# EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS')
+# EMAIL_PORT = env.int('EMAIL_PORT')
+# EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+# EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+# DEFAULT_FROM_EMAIL = env('DEFAULT_FROM_EMAIL')
+
+# # ========================
+# # 4. Database
+# # ========================
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env('DB_NAME'),
+#         'USER': env('DB_USER'),
+#         'PASSWORD': env('DB_PASSWORD'),
+#         'HOST': env('DB_HOST'),
+#         'PORT': env.int('DB_PORT'),
+#     }
+# }
 
 
 
@@ -111,8 +142,6 @@ WSGI_APPLICATION = 'core.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-
-
 # ============ Database SQLITE3 ============
 # DATABASES = {
 #     'default': {
@@ -121,14 +150,13 @@ WSGI_APPLICATION = 'core.wsgi.application'
 #     }
 # }
 
-
-# ============ Database POSTGRESQL ===========
+# # ============ Database POSTGRESQL ===========
 # DATABASES =  {
 #     'default': {
 #         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME' : 'postgres',
-#         'USER' : 'postgres',
-#         'PASSWORD' :'jazz3383',
+#         'NAME' : '',
+#         'USER' : '',
+#         'PASSWORD' :'',
 #         'HOST' : 'localhost',
 #         'PORT' : '5432'
 #     }

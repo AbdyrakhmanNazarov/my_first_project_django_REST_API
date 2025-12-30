@@ -424,3 +424,13 @@
 # # SQLAlchemy
 # stmt = select(User).where(and_(User.age>=18, User.name.ilike('%ali%')))
 # stmt = select(User).where(or_(User.age<18, User.name.ilike('%bob%')))
+
+
+# INT - integerfield
+# VARCHAR - emailfield / charfield
+# TEXT - textfield
+# BOOLEAN - boleanfield
+# DATA - datafield
+# TIME - timefield
+# TIMESTAMP - datetimefield
+# NULL - (null=True)
