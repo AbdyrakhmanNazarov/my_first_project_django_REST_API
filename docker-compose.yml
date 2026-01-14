@@ -1,28 +1,205 @@
-version: "3.9"
+version: '3.8'
 
 services:
+  db1:
+    image: postgres:15.3-alpine
+    env_file:
+      - .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: always
+    networks:
+      - app
+
+  redis:
+    image: redis:7-alpine
+    restart: always
+    networks:
+      - app
+
+  adminer:
+    image: adminer
+    restart: always
+    depends_on:
+      - db1
+    ports:
+      - "${ADMINER_PORT}:8080"
+    networks:
+      - app
+
   web1:
-  
     build: .
-    container_name: django_web
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
-    env_file:
-      - .env
+      - "${PORT}:8000"
     depends_on:
       - db1
+      - redis
+    restart: always
+    networks:
+      - app
 
-  db1:
-    image: postgres:16
-    container_name: postgres_db
+  celery_worker:
+    build: .
+    command: celery -A core worker -l info
+    env_file:
+      - .env
     volumes:
-      - postgres_data:/var/lib/postgresql/data
-    environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      - .:/app
+    depends_on:
+      - redis
+      - db1
+    restart: always
+    networks:
+      - app
+
+  celery_beat:
+    build: .
+    command: celery -A core beat -l info
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - db1
+    restart: always
+    networks:
+      - app
+
+networks:
+  app:
 
 volumes:
-  postgres_data:
+  pgdata:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# version: '3.8'
+
+# services:
+#   db1:
+#     image: postgres:15.3-alpine3.18
+#     env_file:
+#       - .env
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
+#     restart: always
+#     networks:
+#       - app
+
+#   redis:
+#     image: redis:7-alpine
+#     restart: always
+#     networks:
+#       - app
+
+#   adminer:
+#     image: adminer
+#     restart: always
+#     depends_on:
+#       - db1
+#     ports:
+#       - ${ADMINER_PORT}:8080
+#     networks:
+#       - app
+
+#   web1:
+#     build: .
+#     command: python manage.py runserver 0.0.0.0:8000
+#     env_file:
+#       - .env
+#     volumes:
+#       - .:/app
+#     ports:
+#       - ${PORT}:8000
+#     depends_on:
+#       - db1
+#       - redis
+#     networks:
+#       - app
+#     restart: always
+
+#   celery_worker:
+#     build: .
+#     command: celery -A core worker -l info
+#     env_file:
+#       - .env
+#     volumes:
+#       - .:/app
+#     depends_on:
+#       - db1
+#       - redis
+#     networks:
+#       - app
+#     restart: always
+
+#   celery_beat:
+#     build: .
+#     command: celery -A core beat -l info
+#     env_file:
+#       - .env
+#     volumes:
+#       - .:/app
+#     depends_on:
+#       - db1
+#       - redis
+#     networks:
+#       - app
+#     restart: always
+
+# networks:
+#   app:
+
+# volumes:
+#   pgdata:
+
+
+
+# version: "3.9"
+
+# services:
+#   web1:
+  
+#     build: .
+#     container_name: django_web
+#     volumes:
+#       - .:/app
+#     ports:
+#       - "8000:8000"
+#     env_file:
+#       - .env
+#     depends_on:
+#       - db1
+
+#   db1:
+#     image: postgres:16
+#     container_name: postgres_db
+#     volumes:
+#       - postgres_data:/var/lib/postgresql/data
+#     environment:
+#       POSTGRES_DB: ${DB_NAME}
+#       POSTGRES_USER: ${DB_USER}
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+# volumes:
+#   postgres_data:
