@@ -1,11 +1,15 @@
 from celery import shared_task
-from django.db import transaction
 import logging
 
 logger = logging.getLogger(__name__)
 
-@shared_task(bind=True, autoretry_for=(Exception,), retry_kwargs={'max_retries': 3, 'countdown': 10})
+@shared_task(
+    bind=True,
+    name='apps.main.tasks.sync_data_from_db'
+)
 def sync_data_from_db(self):
-    with transaction.atomic():
-        for i in range(10):
-            logger.info(f"Счёт: {i}")
+    """
+    Простая задача: выводит числа от 1 до 10
+    """
+    for i in range(1, 11):
+        logger.info(f"[sync_data_from_db] Счёт: {i}")
