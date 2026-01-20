@@ -31,3 +31,5 @@ Thumbs.db
 # Django migrations (НЕ игнорируем полностью!)
 **/migrations/*.py
 !**/migrations/__init__.py
+
+staticfiles
