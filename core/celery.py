@@ -24,15 +24,15 @@ app.autodiscover_tasks(['accounts'])
 # Beat расписание
 # -----------------------
 app.conf.beat_schedule = {
-    'delete-inactive-users-every-180-seconds': {
-        'task': 'accounts.tasks.delete_inactive_users',
-        'schedule': schedule(180),  # каждые 3 минуты для теста
-    },
-    # Для продакшн:
-    # 'delete-inactive-users-daily': {
+    # 'delete-inactive-users-every-180-seconds': {
     #     'task': 'accounts.tasks.delete_inactive_users',
-    #     'schedule': crontab(hour=0, minute=0),  # раз в день
+    #     'schedule': schedule(180),  # каждые 3 минуты для теста
     # },
+    # Для продакшн:
+    'delete-inactive-users-daily': {
+        'task': 'accounts.tasks.delete_inactive_users',
+        'schedule': crontab(hour=0, minute=0),  # раз в день
+    },
 }
 
 # -----------------------

@@ -7,6 +7,12 @@ logger = logging.getLogger(__name__)
 
 @shared_task(bind=True)
 def delete_inactive_users(self):
+    # now_time = now() - timedelta(minutes=2)
+    # ac_del = User.objects.filter(last_login__lt=now_time)
+    # for user in ac_del:
+    #     logger.info(f"Мы удалили пользоателия {user.email}, потому что он не заходил 2 минуты")
+    #     user.delete()
+
     """
     Удаляет пользователей, которые не заходили на свой аккаунт:
     - тест: более 3 минут назад
@@ -14,18 +20,19 @@ def delete_inactive_users(self):
     """
     # =========================
     # ТЕСТОВАЯ ВЕРСИЯ
-    threshold_date = now() - timedelta(minutes=3)  # 3 минуты
-    # =========================
+    # threshold_date = now() - timedelta(minutes=3)  # 3 минуты
+    # # =========================
 
     # =========================
     # ПРОДАКШН ВЕРСИЯ
-    # threshold_date = now() - timedelta(days=30)  # 30 дней
+    threshold_date = now() - timedelta(days=30)  # 30 дней
     # =========================
 
     # Находим пользователей, которые не заходили
     inactive_users = User.objects.filter(last_login__lt=threshold_date)
 
     count = inactive_users.count()
+    
     for user in inactive_users:
         logger.info(f"[delete_inactive_users] Удаляем пользователя: {user.email}, последний визит: {user.last_login}")
         user.delete()
