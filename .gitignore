@@ -17,7 +17,7 @@ venv/
 .venv/
 env/
 ENV/
-
+venv 
 # IDE
 .vscode/
 .idea/
@@ -28,8 +28,7 @@ ENV/
 .DS_Store
 Thumbs.db
 
-# Django migrations (НЕ игнорируем полностью!)
+# Django migrations (НЕ игнорируем __init__.py!)
 **/migrations/*.py
 !**/migrations/__init__.py
-
-staticfiles
+**/migrations/*.pyc
